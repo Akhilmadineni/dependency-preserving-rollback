@@ -1,0 +1,13 @@
+regime,method,plane,precision,recall,f1
+G,Naive component,control,0.9581,0.833,0.8912
+G,Naive component,data,0.8825,0.7767,0.8262
+G,Greedy closure,control,0.9587,0.9443,0.9515
+G,Greedy closure,data,0.8908,0.9245,0.9073
+G,Tabu (proposed),control,0.9627,0.94,0.9512
+G,Tabu (proposed),data,0.9005,0.9212,0.9107
+L,Naive component,control,0.6733,0.6488,0.6609
+L,Naive component,data,0.7182,0.7241,0.7212
+L,Greedy closure,control,0.6834,0.7302,0.706
+L,Greedy closure,data,0.7208,0.8309,0.7719
+L,Tabu (proposed),control,0.7067,0.6809,0.6936
+L,Tabu (proposed),data,0.7286,0.8112,0.7677

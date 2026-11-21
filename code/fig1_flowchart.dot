@@ -1,0 +1,55 @@
+digraph G {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=18, nodesep=0.15, ranksep=0.14, newrank=true, compound=true, pad=0.03, margin=0];
+  node  [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=17, fillcolor="#eeeeee", color="#777777",
+         penwidth=1.0, margin="0.06,0.03", width=2.15, height=0.42, fixedsize=false];
+  edge  [color="#555555", arrowsize=0.7, fontname="Helvetica", fontsize=15];
+
+  subgraph cluster_data {
+    label="1  Data layer"; labeljust=l; style="rounded,filled"; fillcolor="#f6f6f6"; color="#bbbbbb";
+    comp [label="Components table\n15,858 rows"];
+    edg  [label="Dependency edges\n17,443 rows"];
+    { rank=same; comp; edg; }
+  }
+  subgraph cluster_pre {
+    label="2  Pre-processing + risk model"; labeljust=l; style="rounded,filled"; fillcolor="#f3f6f9"; color="#bbbbbb";
+    prep  [label="Impute + winsorise\n(train fold only)"];
+    gfeat [label="Graph symptom\nfeatures"];
+    lgbm  [label="LightGBM fault\nprob. p_c  Eq. (1)", fillcolor="#d6e4f5", color="#1f5fa8"];
+    rgr   [label="Contract/schema\nimplication R (4)-(5)", fillcolor="#d6e4f5", color="#1f5fa8"];
+    nor   [label="Noisy-OR must-rollback\nprob. m_c  Eq. (2)", fillcolor="#d6e4f5", color="#1f5fa8"];
+    { rank=same; prep; gfeat; }
+    { rank=same; lgbm; rgr; }
+  }
+  subgraph cluster_tabu {
+    label="3  Proposed Tabu search"; labeljust=l; style="rounded,filled"; fillcolor="#e8f0fa"; color="#1f5fa8"; penwidth=1.4;
+    node [fillcolor="#d6e4f5", color="#1f5fa8"];
+    init [label="x⁰ = 1[m_c > θ]"];
+    nbr  [label="Moves: flip c,\nadd/drop closure"];
+    evl  [label="Score J₀ + γV(x)\nEq. (6)"];
+    asp  [label="Tabu (τ) filter +\naspiration  Eq. (7)"];
+    feas [shape=diamond, label="V(x)=0?", width=1.7, height=0.6, margin="0,0", fixedsize=true, fontsize=16];
+    gam  [label="Raise / relax γ\nEq. (8)"];
+    best [label="Keep best\nfeasible x*"];
+    stop [shape=diamond, label="stall≥L\nor k=K?", width=2.2, height=0.8, margin="0,0", fixedsize=true, fontsize=16];
+    { rank=same; init; nbr; }
+    { rank=same; evl; asp; }
+    { rank=same; feas; gam; }
+    { rank=same; best; stop; }
+  }
+  subgraph cluster_eval {
+    label="4  Evaluation"; labeljust=l; style="rounded,filled"; fillcolor="#f6f6f6"; color="#bbbbbb";
+    base  [label="Baselines + exact\nref. (enum./MILP)"];
+    met   [label="F1, match, cost,\nviolations Eq. (9)", fillcolor="#ffffff"];
+    { rank=same; base; met; }
+  }
+  comp -> prep; edg -> gfeat; comp -> gfeat [style=invis];
+  prep -> lgbm; gfeat -> lgbm; gfeat -> rgr;
+  lgbm -> nor; rgr -> nor;
+  nor -> init; init -> nbr; nbr -> asp [style=invis]; nbr -> evl; evl -> asp;
+  asp -> feas; feas -> best [label=" yes"]; feas -> gam [label="no"]; gam -> best [constraint=false];
+  best -> stop;
+  stop -> nbr [xlabel="no ", constraint=false, color="#1f5fa8", penwidth=1.5];
+  stop -> met [label=" yes: x*", color="#1f5fa8", penwidth=1.3];
+  best -> base [style=invis];
+  base -> met;
+}
