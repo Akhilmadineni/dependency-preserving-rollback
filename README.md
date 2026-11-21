@@ -71,4 +71,8 @@ Author: Akhil Venkata Sai Madineni. This package is distributed under the [MIT l
 
 Source repository: [https://github.com/Akhilmadineni/dependency-preserving-rollback](https://github.com/Akhilmadineni/dependency-preserving-rollback).
 
-Use [`CITATION.cff`](CITATION.cff) for the software citation. The matching [`.zenodo.json`](.zenodo.json) supplies the archive metadata for release `v1.0.0`. The version DOI will be added after Zenodo completes archiving.
+Use [`CITATION.cff`](CITATION.cff) for the software citation. The matching [`.zenodo.json`](.zenodo.json) supplies the archive metadata for release `v1.0.0`. Version `v1.0.0` is archived at [10.5281/zenodo.24411016](https://doi.org/10.5281/zenodo.24411016). Use this version DOI to cite the fixed experiment archive.
+
+## Data and code availability
+
+The code, synthetic data, and results are available at https://github.com/Akhilmadineni/dependency-preserving-rollback, with version v1.0.0 archived at https://doi.org/10.5281/zenodo.24411016.
